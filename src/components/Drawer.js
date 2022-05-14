@@ -39,11 +39,6 @@ const Drawer = () => {
                             <div></div>
                             <b>21 000 UAH</b>
                         </li>
-                        {/* <li>
-              <span>Налог 5%:</span>
-              <div></div>
-              <b>1023 UAH</b>
-            </li> */}
                     </ul>
                     <button className='greenBtn'>Оформить заказ <img src='/img/arrow.svg' alt='arrow'></img></button>
                 </div>
