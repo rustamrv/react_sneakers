@@ -42,6 +42,15 @@ header {
   border: 1px solid #F3F3F3;
   border-radius: 15px;
   padding: 0 15px;
+  position: relative;
+
+  .clear {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    top: 14px;
+    right: 15px;
+  }
 
   input {
     border: 0;
@@ -71,7 +80,7 @@ header {
   padding: 30px;
   display: flex;
   flex-direction: column;
-  
+
   .items {
     flex: 1;
     overflow: auto;
@@ -79,7 +88,7 @@ header {
   }
 
   h2 {
-    margin: 0; 
+    margin: 0;
   }
 }
 
@@ -105,6 +114,7 @@ header {
 
   .greenBtn {
     position: relative;
+
 
     &:hover {
       img {
@@ -139,6 +149,43 @@ header {
 
   &:active {
     background: darken($color: #9dd558, $amount: 5%);
+  }
+}
+
+.cartEmpty {
+  text-align: center;
+
+  p {
+    width: 280px;
+    line-height: 24px;
+  }
+
+  .greenButton {
+    width: 245px;
+    height: 55px;
+    margin-top: 20px;
+    background: #9DD558;
+    border-radius: 18px;
+    border: 0;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.1s ease-in-out;
+
+    &:hover {
+      img {
+        transform: rotate(180deg) translateX(3px);
+      }
+    }
+
+    img {
+      position: relative;
+      top: 1px;
+      transform: rotate(180deg);
+      margin-right: 15px;
+      transition: transform 0.15s ease-in-out;
+    }
   }
 }
 
