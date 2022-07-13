@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import Card from './components/Card';
+
 import Drawer from './components/Drawer';
 import Header from './components/Header';
 import axios from 'axios';
-import { Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from 'react-router-dom';
+import Home from './pages/Home';
+import Favorites from './pages/Favorites';
 
 
 const { REACT_APP_GET_ITEMS, REACT_APP_GET_CART, REACT_APP_GET_FAVORITES } = process.env
@@ -22,6 +28,9 @@ function App() {
     axios.get(REACT_APP_GET_CART).then((res) => {
       setCartItems(res.data)
     })
+    axios.get(REACT_APP_GET_FAVORITES).then((res) => {
+      setFavorites(res.data)
+    })
   }, [])
 
   const onAddToCart = (obj) => {
@@ -35,8 +44,13 @@ function App() {
   }
 
   const onAddToFavorite = (obj) => {
-    axios.post(REACT_APP_GET_FAVORITES, obj);
-    setFavorites(prev => [...prev, obj])
+    if (favorites.find(item => item.id == obj.id)) {
+      axios.delete(`${REACT_APP_GET_FAVORITES}/${obj.id}`);
+      setFavorites(prev => prev.filter(item => item.id != obj.id))
+    } else {
+      axios.post(REACT_APP_GET_FAVORITES, obj);
+      setFavorites(prev => [...prev, obj])
+    }
   }
 
   const onSearchInput = (event) => {
@@ -47,37 +61,32 @@ function App() {
     <div className='wrapper clear'>
 
       {cartOpened && <Drawer items={cartItems} onClose={() => setCartOpened(false)} onRemove={onRemoveInCart} />}
-      <Route path='/'>
-        <Header onClickCart={() => setCartOpened(true)} />
-      </Route>
 
-      <div className='content p-40'>
-        <div className='mb-40 d-flex align-center justify-between'>
-          <h1>{searchValue ? `Search by "${searchValue}"` : "All sneakers"} </h1>
-          <div className='search-block d-flex'>
-            <img src='/img/search.svg' alt='Search' />
-            {searchValue && <img onClick={() => setSearchValue('')} className='clear cu-p' src='/img/btn-remove.svg' alt='Clear' />}
-            <input onChange={onSearchInput} value={searchValue} placeholder='Search...' />
-          </div>
-        </div>
+      <Header onClickCart={() => setCartOpened(true)} />
 
-        <div className='d-flex flex-wrap'>
-          {
-            items
-              .filter(item => item.title.toLowerCase().includes(searchValue.toLowerCase()))
-              .map((obj, index) => (
-                <Card
-                  key={index}
-                  title={obj.title}
-                  price={obj.price}
-                  image={obj.image}
-                  onFavorite={(obj) => onAddToFavorite(obj)}
-                  onAdd={(obj) => onAddToCart(obj)}
-                />
-              ))
-          }
-        </div>
-      </div>
+      <Routes>
+        <Route path="/" exact
+          element={
+            <Home
+              items={items}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+              onSearchInput={onSearchInput}
+              onAddToFavorite={onAddToFavorite}
+              onAddToCart={onAddToCart}
+            />
+          }>
+
+        </Route>
+        <Route path="/favorites" exact
+          element={
+            <Favorites
+              items={favorites}
+              onAddToFavorite={onAddToFavorite} />
+          }>
+
+        </Route>
+      </Routes>
 
     </div>
   );
